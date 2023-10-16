@@ -154,8 +154,9 @@ async def teams(interaction: discord.Interaction):
     if any([not len(team_one), not len(team_two)]):
         await interaction.followup.send(
             embed=discord.Embed(
-                title="One of the games had no members, no point in littering chat.",
-                description="Also...no friends? lol?",
+                title="One of the teams had no members, no point in littering chat.",
+                description="Also...no friends? lol? 🤣",
+                color=discord.Color.dark_red(),
             ),
             ephemeral=True,
         )
