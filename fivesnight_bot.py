@@ -70,13 +70,17 @@ class TeamCreationView(discord.ui.View):
     @discord.ui.button(label="Join", style=discord.ButtonStyle.green)
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.queue.append(interaction.user)
-        await interaction.response.send_message("You're entered entered to the queue.", ephemeral=True)
+        await interaction.response.send_message(
+            embed=discord.Embed(title="You've joined the queue.", color=discord.Color.green()), ephemeral=True
+        )
 
     # Leave queue
     @discord.ui.button(label="Leave", style=discord.ButtonStyle.red)
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.queue.remove(interaction.user)
-        await interaction.response.send_message("You've been removed from the queue.", ephemeral=True)
+        await interaction.response.send_message(
+            embed=discord.Embed(title="You've left the queue.", color=discord.Color.red()), ephemeral=True
+        )
 
     # Create teams
     @discord.ui.button(label="Create Teams", style=discord.ButtonStyle.blurple)
