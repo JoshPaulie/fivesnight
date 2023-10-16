@@ -4,6 +4,7 @@
 import os
 import random
 from collections import namedtuple
+from typing import Any
 
 import discord
 from discord.ext import commands
@@ -26,6 +27,11 @@ def assign_roles(team: list[discord.Member | discord.User]) -> list[AssignedPlay
         # If no more roles, give the extras "fill"
         assigned_roles.append(AssignedPlayer(player, "Fill"))
     return assigned_roles
+
+
+def create_bullet_points(lst: list[Any]):
+    """Takes list of items, return bullet point versions"""
+    return [f"- {item}\n" for item in lst]
 
 
 # The bot class itself
@@ -104,7 +110,12 @@ class TeamCreationView(discord.ui.View):
     async def show_queue(self, interaction: discord.Interaction, button: discord.ui.Button):
         queue_len = len(self.queue)
         await interaction.response.send_message(
-            f"There is currently ({queue_len}) people in the queue", ephemeral=True
+            embed=discord.Embed(
+                title=f"There {'are' if queue_len != 1 else 'is'} ({queue_len}) {'people' if queue_len != 1 else 'person'} in the queue",
+                description="\n".join(create_bullet_points(self.queue)),
+                color=discord.Color.greyple(),
+            ),
+            ephemeral=True,
         )
 
 
