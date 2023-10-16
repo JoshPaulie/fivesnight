@@ -8,7 +8,7 @@ from collections import namedtuple
 import discord
 from discord.ext import commands
 
-DEBUG_SERVER = discord.Object(id=510865274594131968)  # replace with your guild id
+MAIN_SERVER = discord.Object(id=1163270649540788254)
 FIVESNIGHT_TOKEN_ENVVAR_STR = "FIVESNIGHT_TOKEN"
 
 AssignedPlayer = namedtuple("AssignedPlayer", "Player Role")
@@ -35,7 +35,7 @@ class FivesnightBot(commands.Bot):
         self.owner_id = 177131156028784640  # bexli boy
 
     async def setup_hook(self):
-        self.tree.copy_global_to(guild=DEBUG_SERVER)
+        self.tree.copy_global_to(guild=MAIN_SERVER)
 
     async def on_ready(self):
         print(f"Logged on as {self.user} (ID: {self.user.id})")  # type: ignore (this type ignore makes me want to kill conrad)
@@ -54,7 +54,7 @@ async def sync(ctx: commands.Context):
         await ctx.send("Only jarsh needs to use this 😬", ephemeral=True)
         await ctx.message.delete()
         return
-    await bot.tree.sync(guild=DEBUG_SERVER)
+    await bot.tree.sync(guild=MAIN_SERVER)
     await ctx.send("Synced.")
 
 
