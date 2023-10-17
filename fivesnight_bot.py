@@ -132,7 +132,7 @@ class TeamCreationView(discord.ui.View):
         # End the view
         self.stop()
 
-    @discord.ui.button(label="Queue", style=discord.ButtonStyle.gray)
+    @discord.ui.button(label="Check Queue", style=discord.ButtonStyle.gray, row=1)
     async def show_queue(self, interaction: discord.Interaction, button: discord.ui.Button):
         queue_len = len(self.queue)
         await interaction.response.send_message(
@@ -169,7 +169,7 @@ async def teams(interaction: discord.Interaction):
     await team_creator.wait()
     # "Clean up" old message so people can't click the buttons
     await interaction.edit_original_response(
-        embed=discord.Embed(title="The queue has ended.", color=discord.Color.greyple()), view=None
+        embed=discord.Embed(title="This queue has ended.", color=discord.Color.greyple()), view=None
     )
     # Grab the two teams from the creator
     team_one = assign_roles(team_creator.team_one)
