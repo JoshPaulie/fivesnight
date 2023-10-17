@@ -77,6 +77,7 @@ async def sync(ctx: commands.Context):
 class TeamCreationView(discord.ui.View):
     def __init__(self, *, timeout: float | None = 180, organizer: DiscordUser):
         super().__init__(timeout=timeout)
+        self.timeout_amount = timeout
         self.organizer = organizer
         self.queue: list[DiscordUser] = []
         self.team_one: list[DiscordUser] = []
