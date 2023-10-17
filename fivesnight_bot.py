@@ -166,11 +166,7 @@ async def teams(interaction: discord.Interaction):
     await interaction.response.send_message(
         embed=discord.Embed(
             title="A 5v5 is starting!",
-            description=list_to_multiline_string(
-                [
-                    f"Organized by **{team_creator.organizer.name}**",
-                ]
-            ),
+            description=f"Organized by **{team_creator.organizer.name}**",
             color=discord.Color.blurple(),
         ),
         view=team_creator,
