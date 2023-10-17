@@ -87,25 +87,32 @@ class TeamCreationView(discord.ui.View):
     @discord.ui.button(label="Join", style=discord.ButtonStyle.green)
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button):
         user = interaction.user
-        if user not in self.queue:
-            self.queue.append(user)
-            await interaction.response.send_message(
-                embed=discord.Embed(title="You've joined the queue.", color=discord.Color.green()),
-                ephemeral=True,
-            )
+        # Check: User is already in queue, nothing to do
+        if user in self.queue:
+            await interaction.response.defer()
             return
-        # finish gracefully
+        self.queue.append(user)
+        await interaction.response.send_message(
+            embed=discord.Embed(
+                title=f"You've joined the queue with {len(self.queue)} other(s).",
+                color=discord.Color.green(),
+            ),
+            ephemeral=True,
+        )
 
     # Leave queue
     @discord.ui.button(label="Leave", style=discord.ButtonStyle.red)
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
         user = interaction.user
-        if user in self.queue:
-            self.queue.remove(user)
-            await interaction.response.send_message(
-                embed=discord.Embed(title="You've left the queue.", color=discord.Color.red()),
-                ephemeral=True,
-            )
+        # Check: User isn't in queue, nothing to do
+        if user not in self.queue:
+            await interaction.response.defer()
+            return
+        self.queue.remove(user)
+        await interaction.response.send_message(
+            embed=discord.Embed(title="You've left the queue.", color=discord.Color.red()),
+            ephemeral=True,
+        )
 
     # Create teams
     @discord.ui.button(label="Create Teams", style=discord.ButtonStyle.blurple)
