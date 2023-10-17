@@ -47,7 +47,12 @@ def list_to_multiline_string(lst: list[str]) -> str:
 # The bot class itself
 class FivesnightBot(commands.Bot):
     def __init__(self, intents: discord.Intents, **kwargs):
-        super().__init__(command_prefix=commands.when_mentioned_or("."), intents=intents, **kwargs)
+        super().__init__(
+            command_prefix=commands.when_mentioned_or("."),
+            help_commands=False,
+            intents=intents,
+            **kwargs,
+        )
         self.owner_id = 177131156028784640  # bexli boy
 
     async def setup_hook(self):
