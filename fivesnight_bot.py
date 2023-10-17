@@ -161,9 +161,7 @@ async def teams(interaction: discord.Interaction):
             title="A 5v5 is starting!",
             description=list_to_multiline_string(
                 [
-                    f"Organized by *{team_creator.organizer.name}*",
-                    "",
-                    f"Virtual queue lasts ({team_creator.timeout_amount // 60}) minutes, or until the organizer starts the 'match making'",  # type: ignore (there will always be a timeout amount)
+                    f"Organized by **{team_creator.organizer.name}**",
                 ]
             ),
             color=discord.Color.blurple(),
