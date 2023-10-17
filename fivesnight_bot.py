@@ -170,10 +170,6 @@ async def teams(interaction: discord.Interaction):
     )
     # Wait for view to finish (it's stopped by the organizer)
     await team_creator.wait()
-    # "Clean up" old message so people can't click the buttons
-    await interaction.edit_original_response(
-        embed=discord.Embed(title="This queue has ended.", color=discord.Color.greyple()), view=None
-    )
     # Grab the two teams from the creator
     team_one = assign_roles(team_creator.team_one)
     team_two = assign_roles(team_creator.team_two)
@@ -181,13 +177,25 @@ async def teams(interaction: discord.Interaction):
     if any([not len(team_one), not len(team_two)]):
         await interaction.followup.send(
             embed=discord.Embed(
-                title="One of the teams had no members, no point in littering chat.",
-                description="Also...no friends? lol? 🤣",
+                title="bruh.. no friends?",
+                description="lol? 🤣",
                 color=discord.Color.dark_red(),
             ),
             ephemeral=True,
         )
+        await interaction.edit_original_response(
+            embed=discord.Embed(
+                title="This queue was discarded.",
+                description="One or more teams had 0 members.",
+                color=discord.Color.greyple(),
+            ),
+            view=None,
+        )
         return
+    # "Clean up" old message so people can't click the buttons
+    await interaction.edit_original_response(
+        embed=discord.Embed(title="This queue has ended.", color=discord.Color.greyple()), view=None
+    )
     # Construct team embeds
     team_one_embed = discord.Embed(title="Team 1", color=discord.Color.blue())
     for member in team_one:
