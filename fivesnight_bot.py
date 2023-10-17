@@ -37,6 +37,13 @@ def create_bullet_points(lst: list[Any]):
     return [f"- {item}\n" for item in lst]
 
 
+def list_to_multiline_string(lst: list[str]) -> str:
+    result = ""
+    for line in lst:
+        result += f"{line}\n"
+    return result
+
+
 # The bot class itself
 class FivesnightBot(commands.Bot):
     def __init__(self, intents: discord.Intents, **kwargs):
@@ -139,7 +146,13 @@ async def teams(interaction: discord.Interaction):
     await interaction.response.send_message(
         embed=discord.Embed(
             title="A 5v5 is starting!",
-            description=f"*Organized by {team_creator.organizer.name}*",
+            description=list_to_multiline_string(
+                [
+                    f"Organized by *{team_creator.organizer.name}*",
+                    "",
+                    f"Virtual queue lasts ({team_creator.timeout_amount // 60}) minutes, or until the organizer starts the 'match making'",  # type: ignore (there will always be a timeout amount)
+                ]
+            ),
             color=discord.Color.blurple(),
         ),
         view=team_creator,
