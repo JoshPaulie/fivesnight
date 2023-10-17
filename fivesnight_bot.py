@@ -15,7 +15,6 @@ MAIN_SERVER = discord.Object(id=1163270649540788254)
 FIVESNIGHT_TOKEN_ENVVAR_STR = "FIVESNIGHT_TOKEN"
 
 # Custom Types
-# AssignedPlayer = namedtuple("AssignedPlayer", "Player Role")
 DiscordUser: TypeAlias = discord.Member | discord.User
 
 
