@@ -9,9 +9,11 @@ from typing import Any, TypeAlias
 import discord
 from discord.ext import commands
 
+# Constants
 MAIN_SERVER = discord.Object(id=1163270649540788254)
 FIVESNIGHT_TOKEN_ENVVAR_STR = "FIVESNIGHT_TOKEN"
 
+# Custom Types
 AssignedPlayer = namedtuple("AssignedPlayer", "Player Role")
 DiscordUser: TypeAlias = discord.Member | discord.User
 
@@ -148,9 +150,9 @@ async def teams(interaction: discord.Interaction):
     await interaction.edit_original_response(
         embed=discord.Embed(title="The queue has ended.", color=discord.Color.greyple()), view=None
     )
+    # Grab the two teams from the creator
     team_one = assign_roles(team_creator.team_one)
     team_two = assign_roles(team_creator.team_two)
-
     # check: if either team is empty, stop the show (and shame them)
     if any([not len(team_one), not len(team_two)]):
         await interaction.followup.send(
@@ -162,16 +164,13 @@ async def teams(interaction: discord.Interaction):
             ephemeral=True,
         )
         return
-
     # Construct team embeds
     team_one_embed = discord.Embed(title="Team 1", color=discord.Color.blue())
     for member in team_one:
         team_one_embed.add_field(name=member.Player, value=member.Role)
-
     team_two_embed = discord.Embed(title="Team 2", color=discord.Color.red())
     for member in team_two:
         team_two_embed.add_field(name=member.Player, value=member.Role)
-
     # Send it!
     await interaction.followup.send(embeds=[team_one_embed, team_two_embed])
 
