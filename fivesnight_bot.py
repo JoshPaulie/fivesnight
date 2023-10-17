@@ -4,6 +4,7 @@
 import os
 import random
 from collections import namedtuple
+from dataclasses import dataclass
 from typing import Any, TypeAlias
 
 import discord
@@ -14,8 +15,14 @@ MAIN_SERVER = discord.Object(id=1163270649540788254)
 FIVESNIGHT_TOKEN_ENVVAR_STR = "FIVESNIGHT_TOKEN"
 
 # Custom Types
-AssignedPlayer = namedtuple("AssignedPlayer", "Player Role")
+# AssignedPlayer = namedtuple("AssignedPlayer", "Player Role")
 DiscordUser: TypeAlias = discord.Member | discord.User
+
+
+@dataclass
+class AssignedPlayer:
+    player: DiscordUser
+    role: str
 
 
 # Helpers
@@ -199,10 +206,10 @@ async def teams(interaction: discord.Interaction):
     # Construct team embeds
     team_one_embed = discord.Embed(title="Team 1", color=discord.Color.blue())
     for member in team_one:
-        team_one_embed.add_field(name=member.Player, value=member.Role)
+        team_one_embed.add_field(name=member.player, value=member.role)
     team_two_embed = discord.Embed(title="Team 2", color=discord.Color.red())
     for member in team_two:
-        team_two_embed.add_field(name=member.Player, value=member.Role)
+        team_two_embed.add_field(name=member.player, value=member.role)
     # Send it!
     await interaction.followup.send(embeds=[team_one_embed, team_two_embed])
 
