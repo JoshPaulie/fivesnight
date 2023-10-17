@@ -4,7 +4,7 @@
 import os
 import random
 from collections import namedtuple
-from typing import Any
+from typing import Any, TypeAlias
 
 import discord
 from discord.ext import commands
@@ -13,10 +13,11 @@ MAIN_SERVER = discord.Object(id=1163270649540788254)
 FIVESNIGHT_TOKEN_ENVVAR_STR = "FIVESNIGHT_TOKEN"
 
 AssignedPlayer = namedtuple("AssignedPlayer", "Player Role")
+DiscordUser: TypeAlias = discord.Member | discord.User
 
 
 # Helpers
-def assign_roles(team: list[discord.Member | discord.User]) -> list[AssignedPlayer]:
+def assign_roles(team: list[DiscordUser]) -> list[AssignedPlayer]:
     roles = "Support Bottom Middle Jungle Top".split()
     assigned_roles = []
     for player in team:
@@ -65,12 +66,12 @@ async def sync(ctx: commands.Context):
 
 
 class TeamCreationView(discord.ui.View):
-    def __init__(self, *, timeout: float | None = 180, organizer: discord.Member | discord.User):
+    def __init__(self, *, timeout: float | None = 180, organizer: DiscordUser):
         super().__init__(timeout=timeout)
         self.organizer = organizer
-        self.queue: list[discord.User | discord.Member] = []
-        self.team_one: list[discord.User | discord.Member] = []
-        self.team_two: list[discord.User | discord.Member] = []
+        self.queue: list[DiscordUser] = []
+        self.team_one: list[DiscordUser] = []
+        self.team_two: list[DiscordUser] = []
 
     # Join queue
     @discord.ui.button(label="Join", style=discord.ButtonStyle.green)
