@@ -3,7 +3,6 @@
 
 import os
 import random
-from collections import namedtuple
 from dataclasses import dataclass
 from typing import Any, TypeAlias
 
