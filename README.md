@@ -3,7 +3,7 @@
 
 ## Usage
 - From within the 5v5 server[^1], type `/teams` to begin a new virtual queue
-- Click "Create Queue" to make sure everyone is ready, then click "Create Teams"
+- Click "Check Queue" to make sure everyone is ready, then click "Create Teams"
 - Create custom game from within the League client
 
 That's it for now. Dead simple bot. 
