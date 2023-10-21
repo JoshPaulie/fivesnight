@@ -245,7 +245,7 @@ class RecordLastMatchView(discord.ui.View):
         self.stop()
 
 
-@bot.tree.command(name="record", description="Create the last match & indicate who won")
+@bot.tree.command(name="record", description="Record the last match & indicate who won")
 async def record(interaction: discord.Interaction):
     # check for recent match played
     if all([not bot.team_one, not bot.team_two]):
