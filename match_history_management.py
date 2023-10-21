@@ -4,7 +4,7 @@ import sys
 
 MATCH_HISTORY_FILE_PATH = "match_history.json"
 GAMES_PLAYED_KEY = "games"
-WINS_PLAYED_KEY = "wins"
+GAMES_WON_KEY = "wins"
 
 PlayerMatchHistory = dict[str, int]
 MatchHistory = dict[str, PlayerMatchHistory]
@@ -33,7 +33,7 @@ def get_match_history_raw() -> MatchHistory:
     return match_history
 
 
-def get_points() -> dict[int, PlayerMatchHistory]:
+def get_match_history() -> dict[int, PlayerMatchHistory]:
     "Discord IDs are ints, but json is literally the worst and only takes string keys"
     raw_match_history = get_match_history_raw()
     return {
@@ -58,11 +58,11 @@ def add_player_match(user_id: int, won_game: bool) -> None:
         match_history: MatchHistory = json.load(points_file)
     # Make sure user has a record
     if user_id_str not in match_history.keys():
-        match_history.update({user_id_str: {GAMES_PLAYED_KEY: 0, WINS_PLAYED_KEY: 0}})
+        match_history.update({user_id_str: {GAMES_PLAYED_KEY: 0, GAMES_WON_KEY: 0}})
     # Make match history changes
     match_history[user_id_str][GAMES_PLAYED_KEY] += 1
     if won_game:
-        match_history[user_id_str][WINS_PLAYED_KEY] += 1
+        match_history[user_id_str][GAMES_WON_KEY] += 1
     # Write out
     with open(MATCH_HISTORY_FILE_PATH, mode="w") as points_file:
         json.dump(match_history, points_file)
