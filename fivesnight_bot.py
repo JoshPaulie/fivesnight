@@ -183,24 +183,24 @@ async def teams(interaction: discord.Interaction):
     team_one = assign_roles(team_creator.team_one)
     team_two = assign_roles(team_creator.team_two)
     # check: if either team is empty, stop the show (and shame them)
-    # if any([not len(team_one), not len(team_two)]):
-    #     await interaction.followup.send(
-    #         embed=discord.Embed(
-    #             title="bruh.. no friends?",
-    #             description="lol? 🤣",
-    #             color=discord.Color.dark_red(),
-    #         ),
-    #         ephemeral=True,
-    #     )
-    #     await interaction.edit_original_response(
-    #         embed=discord.Embed(
-    #             title="This queue was discarded.",
-    #             description="One or more teams had 0 members.",
-    #             color=discord.Color.greyple(),
-    #         ),
-    #         view=None,
-    #     )
-    #     return
+    if any([not len(team_one), not len(team_two)]):
+        await interaction.followup.send(
+            embed=discord.Embed(
+                title="bruh.. no friends?",
+                description="lol? 🤣",
+                color=discord.Color.dark_red(),
+            ),
+            ephemeral=True,
+        )
+        await interaction.edit_original_response(
+            embed=discord.Embed(
+                title="This queue was discarded.",
+                description="One or more teams had 0 members.",
+                color=discord.Color.greyple(),
+            ),
+            view=None,
+        )
+        return
     # "Clean up" old message so people can't click the buttons
     await interaction.edit_original_response(
         embed=discord.Embed(title="This queue has ended.", color=discord.Color.greyple()), view=None
