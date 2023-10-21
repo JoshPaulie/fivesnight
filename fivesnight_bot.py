@@ -9,6 +9,8 @@ from typing import Any, TypeAlias
 import discord
 from discord.ext import commands
 
+import match_history_management as match_manager
+
 # Constants
 MAIN_SERVER = discord.Object(id=1163270649540788254)
 FIVESNIGHT_TOKEN_ENVVAR_STR = "FIVESNIGHT_TOKEN"
@@ -51,6 +53,9 @@ def list_to_multiline_string(lst: list[str]) -> str:
 
 # The bot class itself
 class FivesnightBot(commands.Bot):
+    team_one: list[DiscordUser] = []
+    team_two: list[DiscordUser] = []
+
     def __init__(self, intents: discord.Intents, **kwargs):
         super().__init__(
             command_prefix=commands.when_mentioned_or("."),
@@ -139,6 +144,9 @@ class TeamCreationView(discord.ui.View):
         # Split queue in half, cram into teams
         self.team_one = self.queue[len(self.queue) // 2 :]
         self.team_two = self.queue[: len(self.queue) // 2]
+        # Put the two teams into the bots memory for recording later
+        bot.team_one = self.team_one
+        bot.team_two = self.team_two
         # End the view
         self.stop()
 
@@ -175,24 +183,24 @@ async def teams(interaction: discord.Interaction):
     team_one = assign_roles(team_creator.team_one)
     team_two = assign_roles(team_creator.team_two)
     # check: if either team is empty, stop the show (and shame them)
-    if any([not len(team_one), not len(team_two)]):
-        await interaction.followup.send(
-            embed=discord.Embed(
-                title="bruh.. no friends?",
-                description="lol? 🤣",
-                color=discord.Color.dark_red(),
-            ),
-            ephemeral=True,
-        )
-        await interaction.edit_original_response(
-            embed=discord.Embed(
-                title="This queue was discarded.",
-                description="One or more teams had 0 members.",
-                color=discord.Color.greyple(),
-            ),
-            view=None,
-        )
-        return
+    # if any([not len(team_one), not len(team_two)]):
+    #     await interaction.followup.send(
+    #         embed=discord.Embed(
+    #             title="bruh.. no friends?",
+    #             description="lol? 🤣",
+    #             color=discord.Color.dark_red(),
+    #         ),
+    #         ephemeral=True,
+    #     )
+    #     await interaction.edit_original_response(
+    #         embed=discord.Embed(
+    #             title="This queue was discarded.",
+    #             description="One or more teams had 0 members.",
+    #             color=discord.Color.greyple(),
+    #         ),
+    #         view=None,
+    #     )
+    #     return
     # "Clean up" old message so people can't click the buttons
     await interaction.edit_original_response(
         embed=discord.Embed(title="This queue has ended.", color=discord.Color.greyple()), view=None
@@ -206,6 +214,61 @@ async def teams(interaction: discord.Interaction):
         team_two_embed.add_field(name=member.player, value=member.role)
     # Send it!
     await interaction.followup.send(embeds=[team_one_embed, team_two_embed])
+
+
+class RecordLastMatchView(discord.ui.View):
+    def __init__(self, *, timeout: float | None = 180):
+        super().__init__(timeout=timeout)
+
+    @staticmethod
+    def record_team_one(winning_team: bool):
+        for player in bot.team_one:
+            match_manager.add_player_match(player.id, won_game=winning_team)
+
+    @staticmethod
+    def record_team_two(winning_team: bool):
+        for player in bot.team_two:
+            match_manager.add_player_match(player.id, won_game=winning_team)
+
+    # Team One won
+    @discord.ui.button(label="Team One", style=discord.ButtonStyle.blurple)
+    async def team_one(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.record_team_one(winning_team=True)
+        self.record_team_two(winning_team=False)
+        self.stop()
+
+    # Team One won
+    @discord.ui.button(label="Team Two", style=discord.ButtonStyle.red)
+    async def team_two(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.record_team_one(winning_team=False)
+        self.record_team_two(winning_team=True)
+        self.stop()
+
+
+@bot.tree.command(name="record", description="Create the last match & indicate who won")
+async def record(interaction: discord.Interaction):
+    # check for recent match played
+    if all([not bot.team_one, not bot.team_two]):
+        await interaction.response.send_message(
+            embed=discord.Embed(
+                title="There hasn't been a match played recently.", color=discord.Color.greyple()
+            ),
+        )
+        return
+    record_last_match_view = RecordLastMatchView()
+    await interaction.response.send_message(
+        embed=discord.Embed(title="Who won the last game?", color=discord.Color.greyple()),
+        view=record_last_match_view,
+    )
+    # Wait for someone to say who won
+    await record_last_match_view.wait()
+    # Edit org message so people can't double record the match
+    await interaction.edit_original_response(
+        embed=discord.Embed(title="Match recorded! GG!", color=discord.Color.green()),
+        view=None,
+    )
+    bot.team_one = []
+    bot.team_two = []
 
 
 def main():
