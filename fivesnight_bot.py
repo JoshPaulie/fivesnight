@@ -51,6 +51,11 @@ def list_to_multiline_string(lst: list[str]) -> str:
     return result
 
 
+def calc_winrate(wins: int, games: int) -> str:
+    ratio = wins / games
+    return f"{round(ratio, 2)}%"
+
+
 # The bot class itself
 class FivesnightBot(commands.Bot):
     team_one: list[DiscordUser] = []
@@ -269,6 +274,21 @@ async def record(interaction: discord.Interaction):
     )
     bot.team_one = []
     bot.team_two = []
+
+
+# Match history command
+@bot.tree.command(name="history", description="Check match history")
+async def match_history(interaction: discord.Interaction):
+    history_embed = discord.Embed(title="Match history!", color=discord.Color.blurple())
+    for record in match_manager.get_match_history().items():
+        user_id, match_history = record
+        games_played = match_history[match_manager.GAMES_PLAYED_KEY]
+        games_won = match_history[match_manager.GAMES_WON_KEY]
+        history_embed.add_field(
+            name=interaction.guild.get_member(user_id),  # type: ignore
+            value=f"{games_won}/{games_played} ({calc_winrate(games_won, games_played)})",
+        )
+    await interaction.response.send_message(embed=history_embed)
 
 
 def main():
