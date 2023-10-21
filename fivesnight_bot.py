@@ -89,6 +89,7 @@ async def sync(ctx: commands.Context):
     await ctx.send("Synced.")
 
 
+# Team creation
 class TeamCreationView(discord.ui.View):
     def __init__(self, *, timeout: float | None = 180, organizer: DiscordUser):
         super().__init__(timeout=timeout)
@@ -163,7 +164,6 @@ class TeamCreationView(discord.ui.View):
         )
 
 
-# Team creation
 @bot.tree.command(name="teams", description="Quickly create two even(ish) teams")
 async def teams(interaction: discord.Interaction):
     # create team creation object (department of redundancy department)
@@ -216,6 +216,7 @@ async def teams(interaction: discord.Interaction):
     await interaction.followup.send(embeds=[team_one_embed, team_two_embed])
 
 
+# Record last game played
 class RecordLastMatchView(discord.ui.View):
     def __init__(self, *, timeout: float | None = 180):
         super().__init__(timeout=timeout)
