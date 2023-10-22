@@ -242,6 +242,7 @@ async def create(interaction: discord.Interaction):
 class RecordLastMatchView(discord.ui.View):
     def __init__(self, *, timeout: float | None = 180):
         super().__init__(timeout=timeout)
+        self.winning_team = []
 
     @staticmethod
     def record_team_one(winning_team: bool):
@@ -258,6 +259,7 @@ class RecordLastMatchView(discord.ui.View):
     async def team_one(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.record_team_one(winning_team=True)
         self.record_team_two(winning_team=False)
+        self.winning_team = bot.team_one
         self.stop()
 
     # Team One won
@@ -265,6 +267,7 @@ class RecordLastMatchView(discord.ui.View):
     async def team_two(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.record_team_one(winning_team=False)
         self.record_team_two(winning_team=True)
+        self.winning_team = bot.team_two
         self.stop()
 
 
@@ -278,16 +281,21 @@ async def record(interaction: discord.Interaction):
             ),
         )
         return
-    record_last_match_view = RecordLastMatchView()
+    record_match_view = RecordLastMatchView()
     await interaction.response.send_message(
         embed=discord.Embed(title="Who won the last game?", color=discord.Color.greyple()),
-        view=record_last_match_view,
+        view=record_match_view,
     )
     # Wait for someone to say who won
-    await record_last_match_view.wait()
+    await record_match_view.wait()
     # Edit org message so people can't double record the match
+    random_emoji = random.choice(["😎", "💪", "🥳", "🏆"])
     await interaction.edit_original_response(
-        embed=discord.Embed(title="Match recorded! GG!", color=discord.Color.green()),
+        embed=discord.Embed(
+            title="Match recorded! GG!",
+            description=f"Congrats to {', '.join(m.name for m in record_match_view.winning_team)} {random_emoji}",
+            color=discord.Color.green(),
+        ),
         view=None,
     )
     # Reset the bot's in-memory teams
