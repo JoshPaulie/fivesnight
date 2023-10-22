@@ -246,11 +246,13 @@ class RecordLastMatchView(discord.ui.View):
 
     @staticmethod
     def record_team_one(winning_team: bool):
+        """Update JSON file"""
         for player in bot.team_one:
             match_manager.add_player_match(player.id, won_game=winning_team)
 
     @staticmethod
     def record_team_two(winning_team: bool):
+        """Update JSON file"""
         for player in bot.team_two:
             match_manager.add_player_match(player.id, won_game=winning_team)
 
