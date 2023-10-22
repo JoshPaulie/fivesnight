@@ -66,9 +66,6 @@ def get_player_match_history(user_id: int) -> PlayerMatchHistory | None:
     return match_history.get(user_id_str)
 
 
-# TODO: Create another function that takes a team list and updates in one go
-
-
 def add_player_match(user_ids: int | list[int], won_game: bool) -> None:
     """Update user(s) match history"""
     # Allows the func to still take only 1 user id, if need be
