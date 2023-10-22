@@ -1,6 +1,20 @@
-#!/usr/bin/env python3
+"""
+Dead simple bot used to organize LoL 5v5s
 
+>> Run this file to start bot
 
+Current features:
+- Start "virtual queue" that splits players into 2 teams and assigns them roles
+- The ability log who won the previously made virtual queue
+- Winrate leaderboard
+
+Notes for those learning discord.py:
+- It's important to notes that I wanted this to be as few files as possible,
+  but you'll almost always write your bots in a much more modular way (with cogs and modules)
+- The ".sync" command is a newer standard and required to support modern "slash" commands
+- Like many of my other bots, they're meant to used in a particular server
+- The bot is pretty well covered for thrown exceptions
+"""
 import os
 import random
 from dataclasses import dataclass
@@ -149,7 +163,7 @@ class TeamCreationView(discord.ui.View):
         # Split queue in half, cram into teams
         self.team_one = self.queue[len(self.queue) // 2 :]
         self.team_two = self.queue[: len(self.queue) // 2]
-        # Put the two teams into the bots memory for recording later
+        # Put the two teams into the bots memory for recording match outcomes later
         bot.team_one = self.team_one
         bot.team_two = self.team_two
         # End the view
@@ -168,8 +182,11 @@ class TeamCreationView(discord.ui.View):
         )
 
 
-@bot.tree.command(name="teams", description="Quickly create two even(ish) teams")
-async def teams(interaction: discord.Interaction):
+@bot.tree.command(
+    name="create",
+    description="Create a virtual queue for players to join (creates teams & assigns roles)",
+)
+async def create(interaction: discord.Interaction):
     # create team creation object (department of redundancy department)
     team_creator = TeamCreationView(organizer=interaction.user)
     # Send it with a cutie embed
@@ -272,23 +289,24 @@ async def record(interaction: discord.Interaction):
         embed=discord.Embed(title="Match recorded! GG!", color=discord.Color.green()),
         view=None,
     )
+    # Reset the bot's in-memory teams
     bot.team_one = []
     bot.team_two = []
 
 
-# Match history command
-@bot.tree.command(name="history", description="Check match history")
-async def match_history(interaction: discord.Interaction):
-    history_embed = discord.Embed(title="Match history!", color=discord.Color.blurple())
+# Winrate "leaderboard"
+@bot.tree.command(name="winrates", description="Get everyone's winrates!")
+async def winrates(interaction: discord.Interaction):
+    # Create embed
+    winrates_embed = discord.Embed(title="Match history!", color=discord.Color.blurple())
     for record in match_manager.get_match_history().items():
         user_id, match_history = record
         games_played = match_history[match_manager.GAMES_PLAYED_KEY]
         games_won = match_history[match_manager.GAMES_WON_KEY]
-        history_embed.add_field(
+        winrates_embed.add_field(
             name=interaction.guild.get_member(user_id),  # type: ignore
             value=f"{games_won}/{games_played} ({calc_winrate(games_won, games_played)})",
         )
-    await interaction.response.send_message(embed=history_embed)
 
 
 def main():

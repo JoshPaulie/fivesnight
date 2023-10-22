@@ -1,3 +1,17 @@
+"""
+Crude match history system, tracked in a json file
+
+>> Run this file in interactive mode to manage the match history file
+
+Notes:
+- json is bad and only has strings for keys
+- Each discord.User has an id property, a reliable way to retrieve a discord user's data (ie. Display name)
+- This id is (predictably) an int
+- Most of these functions take ints as arguments but simply convert them to strings to do the actual json getting/setting
+
+Example file:
+{"0000000000": {"games": 0, "won": 0}}
+"""
 import json
 import pathlib
 import sys
@@ -34,16 +48,18 @@ def get_match_history_raw() -> MatchHistory:
 
 
 def get_match_history() -> dict[int, PlayerMatchHistory]:
-    "Discord IDs are ints, but json is literally the worst and only takes string keys"
-    raw_match_history = get_match_history_raw()
+    """Returns the match history but discord IDs are usable ints
+
+    (this is necessary bc json is only takes string keys, and discord wants the ids as ints)
+    """
     return {
         int(discord_user_id): player_match_history
-        for discord_user_id, player_match_history in raw_match_history.items()
+        for discord_user_id, player_match_history in get_match_history_raw().items()
     }
 
 
 def get_player_match_history(user_id: int) -> PlayerMatchHistory | None:
-    """Get points for a certain user"""
+    """Get the match history of a particular player"""
     user_id_str = str(user_id)
     with open(MATCH_HISTORY_FILE_PATH, mode="r") as points_file:
         match_history: MatchHistory = json.load(points_file)
