@@ -88,7 +88,8 @@ class FivesnightBot(commands.Bot):
         self.tree.copy_global_to(guild=MAIN_SERVER)
 
     async def on_ready(self):
-        print(f"Logged on as {self.user} (ID: {self.user.id})")  # type: ignore (this type ignore makes me want to kill conrad)
+        assert self.user
+        print(f"Logged on as {self.user} (ID: {self.user.id})") 
 
 
 # Give the bot permissions so we can use it
@@ -103,7 +104,8 @@ async def sync(ctx: commands.Context):
         await ctx.reply("Only jarsh needs to use this 😬", ephemeral=True)
         return
     await bot.tree.sync(guild=MAIN_SERVER)
-    await ctx.reply(f"Bot commands synced to {ctx.guild.name}")  # type: ignore
+    assert ctx.guild
+    await ctx.reply(f"Bot commands synced to {ctx.guild.name}") 
 
 
 # Team creation
@@ -302,8 +304,9 @@ async def winrates(interaction: discord.Interaction):
         user_id, match_history = record
         games_played = match_history[match_manager.GAMES_PLAYED_KEY]
         games_won = match_history[match_manager.GAMES_WON_KEY]
+        assert interaction.guild
         winrates_embed.add_field(
-            name=interaction.guild.get_member(user_id),  # type: ignore
+            name=interaction.guild.get_member(user_id),
             value=f"{games_won}/{games_played} ({calc_winrate(games_won, games_played)})",
         )
     # Check: no winrates to display
