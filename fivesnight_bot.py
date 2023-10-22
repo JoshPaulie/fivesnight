@@ -88,7 +88,7 @@ class FivesnightBot(commands.Bot):
 
     async def on_ready(self):
         assert self.user
-        print(f"Logged on as {self.user} (ID: {self.user.id})") 
+        print(f"Logged on as {self.user} (ID: {self.user.id})")
 
 
 # The actual bot instance
@@ -107,7 +107,7 @@ async def sync(ctx: commands.Context):
         return
     await bot.tree.sync(guild=MAIN_SERVER)
     assert ctx.guild
-    await ctx.reply(f"Bot commands synced to {ctx.guild.name}") 
+    await ctx.reply(f"Bot commands synced to {ctx.guild.name}")
 
 
 # Team creation
@@ -249,14 +249,12 @@ class RecordLastMatchView(discord.ui.View):
     @staticmethod
     def record_team_one(winning_team: bool):
         """Update JSON file"""
-        for player in bot.team_one:
-            match_manager.add_player_match(player.id, won_game=winning_team)
+        match_manager.add_player_match([player.id for player in bot.team_one], won_game=winning_team)
 
     @staticmethod
     def record_team_two(winning_team: bool):
         """Update JSON file"""
-        for player in bot.team_two:
-            match_manager.add_player_match(player.id, won_game=winning_team)
+        match_manager.add_player_match([player.id for player in bot.team_two], won_game=winning_team)
 
     # Team One won
     @discord.ui.button(label="Team One", style=discord.ButtonStyle.blurple)

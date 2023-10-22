@@ -69,19 +69,26 @@ def get_player_match_history(user_id: int) -> PlayerMatchHistory | None:
 # TODO: Create another function that takes a team list and updates in one go
 
 
-def add_player_match(user_id: int, won_game: bool) -> None:
-    """Update a user's match history"""
-    user_id_str = str(user_id)
+def add_player_match(user_ids: int | list[int], won_game: bool) -> None:
+    """Update user(s) match history"""
+    # Allows the func to still take only 1 user id, if need be
+    if isinstance(user_ids, int):
+        user_ids = [user_ids]
+
     # Read in
     with open(MATCH_HISTORY_FILE_PATH, mode="r") as points_file:
         match_history: MatchHistory = json.load(points_file)
-    # Make sure user has a record
-    if user_id_str not in match_history.keys():
-        match_history.update({user_id_str: {GAMES_PLAYED_KEY: 0, GAMES_WON_KEY: 0}})
-    # Make match history changes
-    match_history[user_id_str][GAMES_PLAYED_KEY] += 1
-    if won_game:
-        match_history[user_id_str][GAMES_WON_KEY] += 1
+
+    for user_id in user_ids:
+        user_id_str = str(user_id)
+        # Make sure user has a record
+        if user_id_str not in match_history.keys():
+            match_history.update({user_id_str: {GAMES_PLAYED_KEY: 0, GAMES_WON_KEY: 0}})
+        # Make match history changes
+        match_history[user_id_str][GAMES_PLAYED_KEY] += 1
+        if won_game:
+            match_history[user_id_str][GAMES_WON_KEY] += 1
+
     # Write out
     with open(MATCH_HISTORY_FILE_PATH, mode="w") as points_file:
         json.dump(match_history, points_file)
