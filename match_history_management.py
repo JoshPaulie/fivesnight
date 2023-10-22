@@ -34,7 +34,10 @@ def create_match_history_file() -> None:
 
     Meant to be used in interactive mode to generate the file"""
     if points_file_exists:
-        if input("File already exists. Would you like to overwrite it (y or n): ").lower() not in ["y", "n"]:
+        if input("File already exists. Would you like to overwrite it (y or n): ").lower() not in [
+            "y",
+            "yes",
+        ]:
             return
     with open(MATCH_HISTORY_FILE_PATH, mode="w") as points_file:
         json.dump({}, points_file)
