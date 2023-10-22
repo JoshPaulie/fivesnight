@@ -100,11 +100,10 @@ bot = FivesnightBot(intents=intents)
 @bot.command(name="sync", description="[Meta] Syncs commands to server")
 async def sync(ctx: commands.Context):
     if not await bot.is_owner(ctx.author):
-        await ctx.send("Only jarsh needs to use this 😬", ephemeral=True)
-        await ctx.message.delete()
+        await ctx.reply("Only jarsh needs to use this 😬", ephemeral=True)
         return
     await bot.tree.sync(guild=MAIN_SERVER)
-    await ctx.send("Synced.")
+    await ctx.reply(f"Bot commands synced to {ctx.guild.name}")  # type: ignore
 
 
 # Team creation
