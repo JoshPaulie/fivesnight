@@ -5,15 +5,14 @@ Dead simple bot used to organize LoL 5v5s
 
 Current features:
 - Start "virtual queue" that splits players into 2 teams and assigns them roles
-- The ability log who won the previously made virtual queue
+- The ability log which team won the previously made virtual queue
 - Winrate leaderboard
 
 Notes for those learning discord.py:
-- It's important to notes that I wanted this to be as few files as possible,
-  but you'll almost always write your bots in a much more modular way (with cogs and modules)
+- This bot doesn't utilize cogs. There's not enough commands to warrant the use of them
 - The ".sync" command is a newer standard and required to support modern "slash" commands
-- Like many of my other bots, they're meant to used in a particular server
-- The bot is pretty well covered for thrown exceptions
+- Like many of my other bots, fivesnight is meant to used in a particular server
+- Most edge cases are covered, minimizing the chance of a user getting "Interaction failed" message
 """
 import os
 import random
@@ -92,9 +91,12 @@ class FivesnightBot(commands.Bot):
         print(f"Logged on as {self.user} (ID: {self.user.id})") 
 
 
-# Give the bot permissions so we can use it
-intents = discord.Intents.all()
-bot = FivesnightBot(intents=intents)
+# The actual bot instance
+# Notes:
+# Intents are basically permissions.
+# The discord.Intents.all() generator gives the bot possible functionality, like seeing user's profiles and reading messages
+# If your bot is designed for many servers, it's best to narrow down the intents
+bot = FivesnightBot(intents=discord.Intents.all())
 
 
 # Sync command
