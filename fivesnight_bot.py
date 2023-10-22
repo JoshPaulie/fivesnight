@@ -306,6 +306,17 @@ async def winrates(interaction: discord.Interaction):
             name=interaction.guild.get_member(user_id),  # type: ignore
             value=f"{games_won}/{games_played} ({calc_winrate(games_won, games_played)})",
         )
+    # Check: no winrates to display
+    if not len(winrates_embed.fields):
+        await interaction.response.send_message(
+            embed=discord.Embed(
+                title="No games have been played yet.",
+                color=discord.Color.greyple(),
+            )
+        )
+        return
+    # Send winrates embed
+    await interaction.response.send_message(embed=winrates_embed)
 
 
 def main():
