@@ -44,6 +44,7 @@ def assign_roles(team: list[DiscordUser]) -> list[AssignedPlayer]:
     Any leftover team members are given the 'Fill' role.
     This allows for more than 10 people to queue up, and let the bot randomly pick who gets to play
     """
+    random.shuffle(team)
     roles = "Support Bottom Middle Jungle Top".split()
     assigned_roles = []
     for player in team:
