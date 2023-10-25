@@ -40,6 +40,10 @@ class AssignedPlayer:
 
 # Helpers
 def assign_roles(team: list[DiscordUser]) -> list[AssignedPlayer]:
+    """'Assigns' a team roles by shuffling their order, then grabbing the next role (from top to bottom).
+    Any leftover team members are given the 'Fill' role.
+    This allows for more than 10 people to queue up, and let the bot randomly pick who gets to play
+    """
     roles = "Support Bottom Middle Jungle Top".split()
     assigned_roles = []
     for player in team:
@@ -58,6 +62,7 @@ def create_bullet_points(lst: list[Any]):
 
 
 def list_to_multiline_string(lst: list[str]) -> str:
+    """Helper for writing multiline embed descriptions, field values, etc, easier to hardcode"""
     result = ""
     for line in lst:
         result += f"{line}\n"
@@ -65,6 +70,11 @@ def list_to_multiline_string(lst: list[str]) -> str:
 
 
 def calc_winrate(wins: int, games: int) -> str:
+    """Returns user winrate in percentage form (with symbol)
+
+    Example
+        calc_winrate(2, 4) -> 50.0%
+    """
     ratio = wins / games
     ratio_percentage = ratio * 100
     return f"{round(ratio_percentage, 1)}%"
