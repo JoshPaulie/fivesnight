@@ -343,10 +343,10 @@ async def record(interaction: discord.Interaction):
 
 
 # Winrate "leaderboard"
-@bot.tree.command(name="winrates", description="Get everyone's winrates!")
+@bot.tree.command(name="winrates", description="Get everyone's win rates!")
 async def winrates(interaction: discord.Interaction):
     # Create embed
-    winrates_embed = discord.Embed(title="Match history!", color=discord.Color.blurple())
+    winrates_embed = discord.Embed(title="Win rates!", color=discord.Color.blurple())
     for record in match_manager.get_match_history().items():
         user_id, match_history = record
         games_played = match_history[match_manager.GAMES_PLAYED_KEY]
@@ -360,9 +360,8 @@ async def winrates(interaction: discord.Interaction):
     if not len(winrates_embed.fields):
         await interaction.response.send_message(
             embed=discord.Embed(
-                title="No games have been played yet.",
+                title="No games have been played yet. 🥲",
                 color=discord.Color.greyple(),
-            )
             ),
             view=DeleteThisMessageView(),
         )
