@@ -26,7 +26,7 @@ import match_history_management as match_manager
 
 # Constants
 MAIN_SERVER = discord.Object(id=1163270649540788254)
-DEBUG_CHANNEL = discord.Object(id=1163272210807541880)
+DEBUG_CHANNEL = discord.Object(id=1163272210807541880, type=discord.TextChannel)
 FIVESNIGHT_TOKEN_ENVVAR_STR = "FIVESNIGHT_TOKEN"
 
 # Custom Types
