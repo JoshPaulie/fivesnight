@@ -131,7 +131,6 @@ class DeleteThisMessageView(discord.ui.View):
     @discord.ui.button(label="Delete this reminder", style=discord.ButtonStyle.danger)
     async def delete_me(self, interaction: discord.Interaction, button: discord.ui.Button):
         assert interaction.message
-        # ! Untested
         await interaction.message.delete()
 
 
@@ -267,9 +266,10 @@ async def create(interaction: discord.Interaction):
     # Send it!
     await interaction.followup.send(embeds=[team_one_embed, team_two_embed])
     await interaction.followup.send(
-        embed=discord.Embed(title="Don't forget to record the outcome!").set_footer(
-            text="After the game, use `/record` to record the outcome of the match!"
-        ),
+        embed=discord.Embed(
+            title="Don't forget to record which team won 🏆",
+            description="After the game, use the `/record` command to log the outcome of the match!",
+        ).set_footer(text="Your 5v5 winrate can be checked with /winrate"),
         view=DeleteThisMessageView(),
     )
 
