@@ -128,7 +128,7 @@ class DeleteThisMessageView(discord.ui.View):
     def __init__(self, *, timeout: float | None = 180):
         super().__init__(timeout=timeout)
 
-    @discord.ui.button(label="Delete this reminder", style=discord.ButtonStyle.danger)
+    @discord.ui.button(label="Delete this message", style=discord.ButtonStyle.danger)
     async def delete_me(self, interaction: discord.Interaction, button: discord.ui.Button):
         assert interaction.message
         await interaction.message.delete()
@@ -249,7 +249,7 @@ async def create(interaction: discord.Interaction):
                     description="One or more teams had 0 members.",
                     color=discord.Color.greyple(),
                 ),
-                view=None,
+                view=DeleteThisMessageView(),
             )
             return
     # "Clean up" old message so people can't click the buttons
@@ -269,6 +269,7 @@ async def create(interaction: discord.Interaction):
         embed=discord.Embed(
             title="Don't forget to record which team won 🏆",
             description="After the game, use the `/record` command to log the outcome of the match!",
+            color=discord.Color.blurple(),
         ).set_footer(text="Your 5v5 winrate can be checked with /winrate"),
         view=DeleteThisMessageView(),
     )
@@ -313,8 +314,10 @@ async def record(interaction: discord.Interaction):
     if all([not bot.team_one, not bot.team_two]):
         await interaction.response.send_message(
             embed=discord.Embed(
-                title="There hasn't been a match played recently.", color=discord.Color.greyple()
-            ),
+                title="There hasn't been a match played recently.",
+                color=discord.Color.greyple(),
+            ).set_footer(text="If there was a mistake recording a recent match, message jarsh"),
+            view=DeleteThisMessageView(),
         )
         return
     record_match_view = RecordLastMatchView()
@@ -360,10 +363,12 @@ async def winrates(interaction: discord.Interaction):
                 title="No games have been played yet.",
                 color=discord.Color.greyple(),
             )
+            ),
+            view=DeleteThisMessageView(),
         )
         return
     # Send winrates embed
-    await interaction.response.send_message(embed=winrates_embed)
+    await interaction.response.send_message(embed=winrates_embed, view=DeleteThisMessageView())
 
 
 def main():
