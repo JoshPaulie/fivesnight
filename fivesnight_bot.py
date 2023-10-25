@@ -26,6 +26,7 @@ import match_history_management as match_manager
 
 # Constants
 MAIN_SERVER = discord.Object(id=1163270649540788254)
+DEBUG_CHANNEL = discord.Object(id=1163272210807541880)
 FIVESNIGHT_TOKEN_ENVVAR_STR = "FIVESNIGHT_TOKEN"
 
 # Custom Types
@@ -231,25 +232,27 @@ async def create(interaction: discord.Interaction):
     # Grab the two teams from the creator
     team_one = assign_roles(team_creator.team_one)
     team_two = assign_roles(team_creator.team_two)
-    # check: if either team is empty, stop the show (and shame them)
-    if any([not len(team_one), not len(team_two)]):
-        await interaction.followup.send(
-            embed=discord.Embed(
-                title="bruh.. no friends?",
-                description="lol? 🤣",
-                color=discord.Color.dark_red(),
-            ),
-            ephemeral=True,
-        )
-        await interaction.edit_original_response(
-            embed=discord.Embed(
-                title="This queue was discarded.",
-                description="One or more teams had 0 members.",
-                color=discord.Color.greyple(),
-            ),
-            view=None,
-        )
-        return
+    # Bypass team minimum check if in debug debug channel
+    if interaction.channel != DEBUG_CHANNEL:
+        # check: if either team is empty, stop the show (and shame them)
+        if any([not len(team_one), not len(team_two)]):
+            await interaction.followup.send(
+                embed=discord.Embed(
+                    title="bruh.. no friends?",
+                    description="lol? 🤣",
+                    color=discord.Color.dark_red(),
+                ),
+                ephemeral=True,
+            )
+            await interaction.edit_original_response(
+                embed=discord.Embed(
+                    title="This queue was discarded.",
+                    description="One or more teams had 0 members.",
+                    color=discord.Color.greyple(),
+                ),
+                view=None,
+            )
+            return
     # "Clean up" old message so people can't click the buttons
     await interaction.edit_original_response(
         embed=discord.Embed(title="This queue has ended.", color=discord.Color.greyple()), view=None
