@@ -122,6 +122,18 @@ async def sync(ctx: commands.Context):
     await ctx.reply(f"Bot commands synced to {ctx.guild.name}")
 
 
+# Clean up view for select messages
+class DeleteThisMessageView(discord.ui.View):
+    def __init__(self, *, timeout: float | None = 180):
+        super().__init__(timeout=timeout)
+
+    @discord.ui.button(label="Delete this reminder", style=discord.ButtonStyle.danger)
+    async def delete_me(self, interaction: discord.Interaction, button: discord.ui.Button):
+        assert interaction.message
+        # ! Untested
+        await interaction.message.delete()
+
+
 # Team creation
 class TeamCreationView(discord.ui.View):
     def __init__(self, *, timeout: float | None = 180, organizer: DiscordUser):
