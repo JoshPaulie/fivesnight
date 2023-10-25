@@ -66,7 +66,8 @@ def list_to_multiline_string(lst: list[str]) -> str:
 
 def calc_winrate(wins: int, games: int) -> str:
     ratio = wins / games
-    return f"{round(ratio, 2)}%"
+    ratio_percentage = ratio * 100
+    return f"{round(ratio_percentage, 1)}%"
 
 
 # The bot class itself
