@@ -262,6 +262,12 @@ async def create(interaction: discord.Interaction):
         team_two_embed.add_field(name=member.player, value=member.role)
     # Send it!
     await interaction.followup.send(embeds=[team_one_embed, team_two_embed])
+    await interaction.followup.send(
+        embed=discord.Embed(title="Don't forget to record the outcome!").set_footer(
+            text="After the game, use `/record` to record the outcome of the match!"
+        ),
+        view=DeleteThisMessageView(),
+    )
 
 
 # Record last game played
