@@ -155,7 +155,8 @@ class TeamCreationView(discord.ui.View):
         self.queue.append(user)
         await interaction.response.send_message(
             embed=discord.Embed(
-                title=f"You've joined the queue with {len(self.queue)} other(s).",
+                title=f"You've joined the queue!",
+                description=f"Current queue size: ({len(self.queue)})",
                 color=discord.Color.green(),
             ),
             ephemeral=True,
