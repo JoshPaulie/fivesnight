@@ -61,9 +61,9 @@ class Helpers:
         return assigned_roles
 
     @staticmethod
-    def create_bullet_points(lst: list[Any]):
+    def create_bullet_points(lst: list[Any]) -> str:
         """Takes list of items, return bullet point versions"""
-        return [f"- {item}\n" for item in lst]
+        return "\n".join([f"- {item}" for item in lst])
 
     @staticmethod
     def list_to_multiline_string(lst: list[str]) -> str:
@@ -163,7 +163,7 @@ class Views:
             await interaction.response.send_message(
                 embed=discord.Embed(
                     title=f"There {'are' if queue_len != 1 else 'is'} ({queue_len}) {'people' if queue_len != 1 else 'person'} in the queue",
-                    description="\n".join(Helpers.create_bullet_points(self.queue)),
+                    description=Helpers.create_bullet_points(self.queue),
                     color=discord.Color.greyple(),
                 ),
                 ephemeral=True,
